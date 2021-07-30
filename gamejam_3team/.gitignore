@@ -1,0 +1,8 @@
+#Ignore Directory
+Debug/
+../Debug/
+.vs/
+Library/
+Logs/
+Temp/
+UserSettings/

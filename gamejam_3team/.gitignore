@@ -6,3 +6,6 @@ Library/
 Logs/
 Temp/
 UserSettings/
+*.csproj
+*.sin
+*.vsconfig

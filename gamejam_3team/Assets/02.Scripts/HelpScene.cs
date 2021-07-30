@@ -9,9 +9,9 @@ public class HelpScene : MonoBehaviour
     {
         yield return new WaitForSeconds(5f);
 
-        //GameManager.instance.LoadScene("02.IngameScene");
-        GameManager.instance.endingType = EndingType.Happy;
-        GameManager.instance.LoadScene("05.EndingScene");
+        GameManager.instance.LoadScene("02.IngameScene");
+        /*GameManager.instance.endingType = EndingType.Happy;
+        GameManager.instance.LoadScene("05.EndingScene");*/
     }
 
     // Update is called once per frame

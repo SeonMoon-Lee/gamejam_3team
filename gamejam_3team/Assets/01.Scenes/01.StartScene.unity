@@ -363,7 +363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -553,6 +553,7 @@ GameObject:
   - component: {fileID: 551205806}
   - component: {fileID: 551205805}
   - component: {fileID: 551205804}
+  - component: {fileID: 551205807}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -674,6 +675,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 551205802}
   m_CullTransparentMesh: 1
+--- !u!114 &551205807
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 551205802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9eb35234601da8f4b9670f9ea18ae5b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &816513431
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,6 +696,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 816513432}
+  - component: {fileID: 816513435}
+  - component: {fileID: 816513436}
   - component: {fileID: 816513434}
   - component: {fileID: 816513433}
   m_Layer: 5
@@ -753,6 +768,38 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 816513431}
   m_CullTransparentMesh: 1
+--- !u!114 &816513435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816513431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44aebfc5c2b56d94ca82e183e1640ff8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 816513433}
+  curColor: {r: 0, g: 0, b: 0, a: 0}
+  targetColor: {r: 0, g: 0, b: 0, a: 1}
+  duration: 5
+--- !u!114 &816513436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 816513431}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c65b0446cc87d624a80cc33da8aab713, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 816513432}
+  from: {x: 0, y: 0, z: 0}
+  to: {x: 1, y: 1, z: 1}
+  duration: 1
 --- !u!1 &1608595541
 GameObject:
   m_ObjectHideFlags: 0

@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance = null;
 
+    public EndingType endingType = EndingType.Bad;
     private void Awake()
     {
         if (instance == null)
@@ -28,5 +29,10 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public void LoadScene(string name)
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(name);
     }
 }

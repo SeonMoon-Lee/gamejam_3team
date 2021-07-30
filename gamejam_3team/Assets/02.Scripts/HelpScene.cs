@@ -5,9 +5,13 @@ using UnityEngine;
 public class HelpScene : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    IEnumerator Start()
     {
-        
+        yield return new WaitForSeconds(5f);
+
+        //GameManager.instance.LoadScene("02.IngameScene");
+        GameManager.instance.endingType = EndingType.Happy;
+        GameManager.instance.LoadScene("05.EndingScene");
     }
 
     // Update is called once per frame

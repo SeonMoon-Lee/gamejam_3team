@@ -8,4 +8,16 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01.Scenes/01.StartScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/01.Scenes/02.IngameScene.unity
+    guid: c77e9a9ccdadb844eb5dac4372de55c3
+  - enabled: 1
+    path: Assets/01.Scenes/03.StoryScene.unity
+    guid: 55115074aef66a549a616eac802f236e
+  - enabled: 1
+    path: Assets/01.Scenes/04.HelpScene.unity
+    guid: b8fca74a61cf29844b96cbc369d4a745
+  - enabled: 1
+    path: Assets/01.Scenes/05.EndingScene.unity
+    guid: 3370a4bc17c80bc4587e995c83a2fc8e
   m_configObjects: {}

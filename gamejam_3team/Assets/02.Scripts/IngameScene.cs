@@ -25,6 +25,8 @@ public class IngameScene : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //SetupStage();
+
         var audioSources = GetComponents<AudioSource>();
         beatSource = audioSources[0];
         backgroundSource = audioSources[1];
@@ -157,5 +159,49 @@ public class IngameScene : MonoBehaviour
         {
             playerKeyCombo(notes);
         }
+    }
+
+
+
+    //참고
+    private int stageIndex = 0;
+    void SetupStage()
+    {
+        //0,1,2 스테이지 노트리스트를 가져온다.
+
+        //해산물들을 스테이지에 따라 Active 해준다.
+
+    }
+    void NextStage()
+    {
+        GameManager.instance.SetStage(++stageIndex);
+        SetupStage();
+    }
+    IEnumerator ReadyCount()
+    {
+        yield return null;
+        //3
+        yield return null;
+        //2
+        yield return null;
+        //1
+
+        //start
+        StartCoroutine(Process());
+    }
+    IEnumerator Process()
+    {
+        yield return null;
+        //NPC TURN
+        yield return null;
+        //1스테이지 일 경우 your 턴 표시
+        //플레이어 턴
+
+        //성공,실패 처리
+        yield return null;
+        //다음 턴이 있으면 다음턴 실행
+        //없으면 스테이지 클리어 연출
+
+        //마지막 스테이지일 경우 엔딩 씬 로드
     }
 }

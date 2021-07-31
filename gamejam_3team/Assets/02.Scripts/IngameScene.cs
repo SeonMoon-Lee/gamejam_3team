@@ -12,12 +12,15 @@ public class IngameScene : MonoBehaviour
     public Canvas UICanvas;
     public Canvas NPCCanvas;
 
-    Image[] npcImages;
+    Image[] npcKeyImages;
     Image[] uiImages;
+    Image[] npcImages;
 
     bool turn = false;
     int noteIndex = 0;
     KeyCode[] notes;
+    Dictionary<KeyCode, int> noteMap;
+    IEnumerator sequence;
     
     // Start is called before the first frame update
     void Start()
@@ -25,22 +28,22 @@ public class IngameScene : MonoBehaviour
         var audioSources = GetComponents<AudioSource>();
         beatSource = audioSources[0];
         backgroundSource = audioSources[1];
-        var npcImageObjs = GameObject.FindGameObjectsWithTag("key");
+        var npcKeyImageObj = GameObject.FindGameObjectsWithTag("key");
         Dictionary<String, int> keyMap_ = new Dictionary<string, int>();
-        keyMap_.Add("AsoundImage", 0);
-        keyMap_.Add("SsoundImage", 1);
-        keyMap_.Add("DsoundImage", 2);
-        keyMap_.Add("FsoundImage", 3);
-        keyMap_.Add("AkeyImage", 0);
-        keyMap_.Add("SkeyImage", 1);
-        keyMap_.Add("DkeyImage", 2);
-        keyMap_.Add("FkeyImage", 3);
-        npcImages = new Image[npcImageObjs.Length];
-        for (int i = 0; i < npcImageObjs.Length; i++)
+        keyMap_.Add("WsoundImageActive", 0);
+        keyMap_.Add("AsoundImageActive", 1);
+        keyMap_.Add("SsoundImageActive", 2);
+        keyMap_.Add("DsoundImageActive", 3);
+        keyMap_.Add("WkeyImageActive", 0);
+        keyMap_.Add("AkeyImageActive", 1);
+        keyMap_.Add("SkeyImageActive", 2);
+        keyMap_.Add("DkeyImageActive", 3);
+        npcKeyImages = new Image[npcKeyImageObj.Length];
+        for (int i = 0; i < npcKeyImageObj.Length; i++)
         {
-            var image_ = npcImageObjs[i].GetComponent<Image>();
-            var index = keyMap_[npcImageObjs[i].name];
-            npcImages[index] = image_;
+            var image_ = npcKeyImageObj[i].GetComponent<Image>();
+            var index = keyMap_[npcKeyImageObj[i].name];
+            npcKeyImages[index] = image_;
         }
         uiImages = UICanvas.GetComponentsInChildren<Image>();
         var uiImageObjs = GameObject.FindGameObjectsWithTag("uikey");
@@ -52,12 +55,28 @@ public class IngameScene : MonoBehaviour
             uiImages[index] = image_;
         }
         foreach (var i in uiImages) i.enabled = false;
-        foreach (var i in npcImages) i.enabled = false;
+        foreach (var i in npcKeyImages) i.enabled = false;
+        var npcImagesObjs = GameObject.FindGameObjectsWithTag("NPC");
+        npcImages = new Image[npcImagesObjs.Length];
+        for (int i = 0; i < npcImagesObjs.Length; i++)
+        {
+            string msg = $"{npcImagesObjs[i].name}: {i}";
+            Debug.Log(msg);
+            npcImages[i] = npcImagesObjs[i].GetComponent<Image>();
+            npcImages[i].enabled = false;
+        }
+
+        noteMap = new Dictionary<KeyCode, int>();
+        noteMap.Add(KeyCode.W, 0);
+        noteMap.Add(KeyCode.A, 1);
+        noteMap.Add(KeyCode.S, 2);
+        noteMap.Add(KeyCode.D, 3);
 
         backgroundSource.clip = clips[1];
         backgroundSource.volume = 0.7f;
         beatSource.clip = clips[0];
-        StartCoroutine(TestSequence());
+        sequence = TestSequence();
+        StartCoroutine(sequence);
     }
     
     IEnumerator TestSequence()
@@ -67,38 +86,23 @@ public class IngameScene : MonoBehaviour
         
         backgroundSource.Play();
         yield return waitForSeconds;
-        for (int i = 0; i < 4; i++)
+        notes = new KeyCode[] {KeyCode.W, KeyCode.W, KeyCode.S, KeyCode.D, KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
+        for (int i = 0; i < notes.Length; i++)
         {
             beatSource.clip = clips[0];
             beatSource.Play();
-            npcImages[i].enabled = true;
+            npcKeyImages[noteMap[notes[i]]].enabled = true;
             yield return waitForSeconds2;
+            npcKeyImages[noteMap[notes[i]]].enabled = false;
         }
-        notes = new KeyCode[] {KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F};
+        
         turn = true;
         while (turn)
         {
             yield return waitForSeconds2;
         }
-        foreach (var i in npcImages) i.enabled = false;
         foreach (var i in uiImages) i.enabled = false;
-        
-        for (int i = 0; i < 4; i++)
-        {
-            beatSource.clip = clips[0];
-            beatSource.Play();
-            npcImages[i].enabled = true;
-            yield return waitForSeconds2;
-        }
-        
-        notes = new KeyCode[] {KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F};
-        turn = true;
-        while (turn)
-        {
-            yield return waitForSeconds2;
-        }
-        foreach (var i in npcImages) i.enabled = false;
-        
+
         GameManager.instance.endingType = EndingType.Happy;
         GameManager.instance.LoadScene("05.EndingScene");
     }
@@ -112,13 +116,13 @@ public class IngameScene : MonoBehaviour
             if (Input.GetKeyDown(notes[noteIndex]))
             {
                 beatSource.Play();
-                uiImages[noteIndex].enabled = true;
+                uiImages[noteMap[notes[noteIndex]]].enabled = true;
                 noteIndex++;
                 timer = 0.0f;
             }
             else
             {
-                failure();
+                StartCoroutine(failure());
             }
             
             if (noteIndex >= notes.Length)
@@ -130,9 +134,16 @@ public class IngameScene : MonoBehaviour
             }
         }
     }
-    void failure()
+    IEnumerator failure()
     {
         turn = false;
+        StopCoroutine(sequence);
+        backgroundSource.Stop();
+        foreach (var npc in npcImages)
+        {
+            npc.enabled = true;
+        }
+        yield return new WaitForSeconds(5.0f);
         GameManager.instance.endingType = EndingType.Bad;
         GameManager.instance.LoadScene("05.EndingScene");
     }

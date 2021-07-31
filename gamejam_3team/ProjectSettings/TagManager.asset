@@ -6,6 +6,7 @@ TagManager:
   tags:
   - key
   - uikey
+  - NPC
   layers:
   - Default
   - TransparentFX

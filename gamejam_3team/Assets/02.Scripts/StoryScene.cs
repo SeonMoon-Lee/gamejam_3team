@@ -6,6 +6,7 @@ public class StoryScene : MonoBehaviour
 {
     // Start is called before the first frame update
     public GameObject[] stories;
+    public GameObject playButton;
     void Start()
     {
         //stories = StoryListObject.transform.get<GameObject>();
@@ -28,8 +29,12 @@ public class StoryScene : MonoBehaviour
             yield return new WaitForSeconds(1f);
             stories[i].SetActive(true);
         }
-        yield return new WaitForSeconds(3f);
+        //yield return new WaitForSeconds(3f);
+        playButton.SetActive(true);
+    }
 
+    public void OnClickPlay()
+    {
         GameManager.instance.LoadScene("04.HelpScene");
     }
 }

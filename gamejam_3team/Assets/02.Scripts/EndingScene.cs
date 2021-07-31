@@ -1,11 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum EndingType
-{
-    Bad,
-    Happy,
-}
+
 public class EndingScene : MonoBehaviour
 {
     public GameObject BadEnding;

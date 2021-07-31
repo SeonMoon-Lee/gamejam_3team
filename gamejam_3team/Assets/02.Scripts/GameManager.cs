@@ -80,7 +80,6 @@ public class GameManager : MonoBehaviour
         FadeImage.targetColor = Color.clear;
         FadeImage.curColor = Color.black;
         FadeImage.Play();
-
     }
     public void SetStage(int idx) { StageId = idx; }
     //NoteData를 반환하는게 베스트?

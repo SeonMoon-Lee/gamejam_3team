@@ -27,6 +27,7 @@ public class IngameScene : MonoBehaviour
     public GameObject Octopus, wasd, Lobster, space, Starfish, arrows;
 
     public GameObject StageClearPopup;
+    public GameObject PausePopup;
 
     public TweenScale OctopusTween, LobsterTween, StarfishTween;
     // Start is called before the first frame update
@@ -115,7 +116,7 @@ public class IngameScene : MonoBehaviour
 
         stageId = GameManager.instance.StageId;
     }
-    
+
     IEnumerator failure()
     {
         turn = false;
@@ -139,6 +140,11 @@ public class IngameScene : MonoBehaviour
         {
             // playerKeyCombo(notes);
         }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PausePopup.SetActive(true);
+            Time.timeScale = 0;
+        }
     }
 
     List<List<List<string>>> getNotes()
@@ -160,7 +166,8 @@ public class IngameScene : MonoBehaviour
                 p_.Add(k_);
                 data.Add(p_);
                 turn++;
-            } else if (note.part - 1 > part)
+            }
+            else if (note.part - 1 > part)
             {
                 k_ = new List<string>();
                 k_.Add(note.key);
@@ -171,9 +178,9 @@ public class IngameScene : MonoBehaviour
             {
                 k_.Add(note.key);
             }
-            
+
         }
-        
+
         return data;
     }
 
@@ -197,7 +204,7 @@ public class IngameScene : MonoBehaviour
                 space.SetActive(false);
                 Starfish.SetActive(false);
                 arrows.SetActive(false);
-                
+
                 // 음악 세팅
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
@@ -217,7 +224,7 @@ public class IngameScene : MonoBehaviour
                 space.transform.position += new Vector3(200, 0.0f, 0.0f);
                 Starfish.SetActive(false);
                 arrows.SetActive(false);
-                
+
                 // 음악 세팅
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
@@ -233,7 +240,7 @@ public class IngameScene : MonoBehaviour
                 space.SetActive(true);
                 Starfish.SetActive(true);
                 arrows.SetActive(true);
-                
+
                 // 음악 세팅
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
@@ -243,7 +250,7 @@ public class IngameScene : MonoBehaviour
                 beatSource.clip = clips[0];
                 break;
         }
-        
+
     }
     public void NextStage()
     {
@@ -269,10 +276,10 @@ public class IngameScene : MonoBehaviour
         var waitForPart = new WaitForSeconds(1.5f);
         var waitForSeconds2 = new WaitForSeconds(0.95f);
         var waitForSeconds3 = new WaitForSeconds(0.05f);
-        
+
         backgroundSource.Play();
         yield return waitForSeconds;
-        
+
         foreach (var turn in notes)
         {
             var combo = new List<KeyCode>();
@@ -293,12 +300,12 @@ public class IngameScene : MonoBehaviour
                     npcKeyImages[noteMap[note_]].enabled = false;
                     yield return waitForSeconds3;
                 }
-                yield return waitForPart;   
+                yield return waitForPart;
             }
             // your turn!
             yourTurn.enabled = true;
             yield return waitForSeconds3;
-            
+
             foreach (var note in combo)
             {
                 yield return new WaitUntil(() => Input.anyKeyDown);
@@ -323,7 +330,7 @@ public class IngameScene : MonoBehaviour
         yield return null;
         //1스테이지 일 경우 your 턴 표시
         //플레이어 턴
-        
+
         //성공,실패 처리
         yield return null;
         if (stageId <= 3)
@@ -340,5 +347,41 @@ public class IngameScene : MonoBehaviour
         //없으면 스테이지 클리어 연출
 
         //마지막 스테이지일 경우 엔딩 씬 로드
+    }
+
+    public void OnClickContinue()
+    {
+        PausePopup.SetActive(false);
+        StartCoroutine(Continue());
+    }
+    IEnumerator Continue()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+
+        Debug.Log("Ready");
+        yield return new WaitForSecondsRealtime(1f);
+
+        Debug.Log("go");
+        Time.timeScale = 1;
+    }
+    public void OnClickTitle()
+    {
+        PausePopup.transform.Find("MainPopup").gameObject.SetActive(true);
+    }
+    public void GoTitle()
+    {
+        GameManager.instance.LoadScene("01.StartScene");
+    }
+    public void OnClickQuit()
+    {
+        PausePopup.transform.Find("ExitPopup").gameObject.SetActive(true);
+    }
+    public void Quit()
+    {
+        Application.Quit();
+    }
+    public void ClosePopup(GameObject gobj)
+    { 
+        gobj.SetActive(false); 
     }
 }

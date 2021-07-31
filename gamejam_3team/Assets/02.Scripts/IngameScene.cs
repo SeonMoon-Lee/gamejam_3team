@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using TreeEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,87 +18,80 @@ public class IngameScene : MonoBehaviour
     Image[] npcKeyImages;
     Image[] uiImages;
     Image[] npcImages;
+    Text yourTurn;
 
     bool turn = false;
     int noteIndex = 0;
-    KeyCode[] notes;
+    // KeyCode[] notes;
+    List<List<List<string>>> notes;
     Dictionary<KeyCode, int> noteMap;
+    Dictionary<String, int> keyMap;
+    Dictionary<string, KeyCode> keycodeMap;
     IEnumerator sequence;
     
     // Start is called before the first frame update
     void Start()
     {
-        //SetupStage();
+        SetInit();
+        SetupStage();
+        StartCoroutine(ReadyCount());
+    }
 
-        var audioSources = GetComponents<AudioSource>();
-        beatSource = audioSources[0];
-        backgroundSource = audioSources[1];
-        var npcKeyImageObj = GameObject.FindGameObjectsWithTag("key");
-        Dictionary<String, int> keyMap_ = new Dictionary<string, int>();
-        keyMap_.Add("WsoundImageActive", 0);
-        keyMap_.Add("AsoundImageActive", 1);
-        keyMap_.Add("SsoundImageActive", 2);
-        keyMap_.Add("DsoundImageActive", 3);
-        keyMap_.Add("WkeyImageActive", 0);
-        keyMap_.Add("AkeyImageActive", 1);
-        keyMap_.Add("SkeyImageActive", 2);
-        keyMap_.Add("DkeyImageActive", 3);
-        npcKeyImages = new Image[npcKeyImageObj.Length];
-        for (int i = 0; i < npcKeyImageObj.Length; i++)
+    void SetInit()
+    {
+        keyMap = new Dictionary<string, int>
         {
-            var image_ = npcKeyImageObj[i].GetComponent<Image>();
-            var index = keyMap_[npcKeyImageObj[i].name];
-            npcKeyImages[index] = image_;
-        }
-        uiImages = UICanvas.GetComponentsInChildren<Image>();
-        var uiImageObjs = GameObject.FindGameObjectsWithTag("uikey");
-        uiImages = new Image[uiImageObjs.Length];
-        for (int i = 0; i < uiImageObjs.Length; i++)
+            {"WsoundImageActive", 0},
+            {"AsoundImageActive", 1},
+            {"SsoundImageActive", 2},
+            {"DsoundImageActive", 3},
+            {"SpsoundImageActive", 4},
+            {"UpsoundImageActive", 5},
+            {"LeftsoundImageActive", 6},
+            {"DownsoundImageActive", 7},
+            {"RightsoundImageActive", 8},
+            {"WkeyImageActive", 0},
+            {"AkeyImageActive", 1},
+            {"SkeyImageActive", 2},
+            {"DkeyImageActive", 3},
+            {"SpkeyImageActive", 4},
+            {"UpkeyImageActive", 5},
+            {"LeftkeyImageActive", 6},
+            {"DownkeyImageActive", 7},
+            {"RightkeyImageActive", 8}
+        };
+        noteMap = new Dictionary<KeyCode, int>
         {
-            var image_ = uiImageObjs[i].GetComponent<Image>();
-            var index = keyMap_[uiImageObjs[i].name];
-            uiImages[index] = image_;
-        }
-        foreach (var i in uiImages) i.enabled = false;
-        foreach (var i in npcKeyImages) i.enabled = false;
-        var npcImagesObjs = GameObject.FindGameObjectsWithTag("NPC");
-        npcImages = new Image[npcImagesObjs.Length];
-        for (int i = 0; i < npcImagesObjs.Length; i++)
-        {
-            string msg = $"{npcImagesObjs[i].name}: {i}";
-            Debug.Log(msg);
-            npcImages[i] = npcImagesObjs[i].GetComponent<Image>();
-            npcImages[i].enabled = false;
-        }
+            {KeyCode.W, 0}, {KeyCode.A, 1}, {KeyCode.S, 2}, {KeyCode.D, 3}, {KeyCode.Space, 4},
+            {KeyCode.UpArrow, 5}, {KeyCode.LeftArrow, 6}, {KeyCode.DownArrow, 7}, {KeyCode.RightArrow, 8}
+        };
 
-        noteMap = new Dictionary<KeyCode, int>();
-        noteMap.Add(KeyCode.W, 0);
-        noteMap.Add(KeyCode.A, 1);
-        noteMap.Add(KeyCode.S, 2);
-        noteMap.Add(KeyCode.D, 3);
-
-        backgroundSource.clip = clips[1];
-        backgroundSource.volume = 0.7f;
-        beatSource.clip = clips[0];
-        sequence = TestSequence();
-        StartCoroutine(sequence);
+        keycodeMap = new Dictionary<string, KeyCode>
+        {
+            {"W", KeyCode.W}, {"A", KeyCode.A}, {"S", KeyCode.S}, {"D", KeyCode.D}, {"space", KeyCode.Space},
+            {"↑", KeyCode.UpArrow}, {"←", KeyCode.LeftArrow}, {"↓", KeyCode.DownArrow}, {"→", KeyCode.RightArrow}
+        };
     }
     
+    /*
     IEnumerator TestSequence()
     {
         var waitForSeconds = new WaitForSeconds(2.0f);
-        var waitForSeconds2 = new WaitForSeconds(0.5f);
+        var waitForSeconds2 = new WaitForSeconds(0.95f);
+        var waitForSeconds3 = new WaitForSeconds(0.05f);
         
         backgroundSource.Play();
         yield return waitForSeconds;
-        notes = new KeyCode[] {KeyCode.W, KeyCode.W, KeyCode.S, KeyCode.D, KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D};
-        for (int i = 0; i < notes.Length; i++)
+        
+        foreach (var t in notes)
         {
+            // 노트에 따라 음이 달라지면 클립도 변경해야한다.
             beatSource.clip = clips[0];
             beatSource.Play();
-            npcKeyImages[noteMap[notes[i]]].enabled = true;
+            npcKeyImages[noteMap[t]].enabled = true;
             yield return waitForSeconds2;
-            npcKeyImages[noteMap[notes[i]]].enabled = false;
+            npcKeyImages[noteMap[t]].enabled = false;
+            yield return waitForSeconds3;
         }
         
         turn = true;
@@ -107,8 +103,9 @@ public class IngameScene : MonoBehaviour
 
         GameManager.instance.endingType = EndingType.Happy;
         GameManager.instance.LoadScene("05.EndingScene");
-    }
+    }*/
 
+    /*
     void playerKeyCombo(KeyCode[] combo)
     {
         if (turn && Input.anyKeyDown)
@@ -132,10 +129,9 @@ public class IngameScene : MonoBehaviour
                 turn = false;
                 noteIndex = 0;
                 timer = 0.0f;
-                
             }
         }
-    }
+    }*/
     IEnumerator failure()
     {
         turn = false;
@@ -157,20 +153,160 @@ public class IngameScene : MonoBehaviour
     {
         if (turn && Input.anyKeyDown)
         {
-            playerKeyCombo(notes);
+            // playerKeyCombo(notes);
         }
     }
 
-
+    List<List<List<string>>> getNotes(int stage)
+    {
+        var notes_ = GameManager.instance.GetCurrentStage();
+        int turn = 0, part = 0;
+        List<List<List<string>>> data = new List<List<List<string>>>();
+        List<List<string>> p_ = new List<List<string>>();
+        List<string> k_ = new List<string>();
+        p_.Add(k_);
+        data.Add(p_);
+        foreach (var note in notes_)
+        {
+            if (note.turn - 1 > turn)
+            {
+                p_ = new List<List<string>>();
+                k_ = new List<string>();
+                k_.Add(note.key);
+                p_.Add(k_);
+                data.Add(p_);
+                turn++;
+            } else if (note.part - 1 > part)
+            {
+                k_ = new List<string>();
+                k_.Add(note.key);
+                p_.Add(k_);
+                part++;
+            }
+            else
+            {
+                k_.Add(note.key);
+            }
+            
+        }
+        
+        List<KeyCode[]> notes = new List<KeyCode[]>
+        {
+            new KeyCode[] {KeyCode.W, KeyCode.W, KeyCode.S, KeyCode.D, KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D},
+            new KeyCode[] {KeyCode.W, KeyCode.Space, KeyCode.S, KeyCode.D, KeyCode.Space, KeyCode.A, KeyCode.S, KeyCode.D}
+        };
+        
+        // return notes[stage];
+        return data;
+    }
 
     //참고
-    private int stageIndex = 0;
+    private int stageIndex;
     void SetupStage()
     {
+        // stageIndex = GameManager.instance.StageIndex;
+        stageIndex = 0;
+        
         //0,1,2 스테이지 노트리스트를 가져온다.
+        notes = getNotes(stageIndex);
 
         //해산물들을 스테이지에 따라 Active 해준다.
+        var Octopus = GameObject.Find("OctopusObject");
+        var wasd = GameObject.Find("wasd");
+        var Lobster = GameObject.Find("LobsterObject");
+        var space = GameObject.Find("space");
+        var Starfish = GameObject.Find("StarfishObject");
+        var arrows = GameObject.Find("arrows");
+        AudioSource[] audioSources;
+        switch (stageIndex)
+        {
+            case 0:
+                Octopus.SetActive(true);
+                Octopus.transform.position += new Vector3(300, 0.0f, 0.0f);
+                wasd.SetActive(true);
+                wasd.transform.position += new Vector3(300, 0.0f, 0.0f);
+                Lobster.SetActive(false);
+                space.SetActive(false);
+                Starfish.SetActive(false);
+                arrows.SetActive(false);
+                
+                // 음악 세팅
+                audioSources = GetComponents<AudioSource>();
+                beatSource = audioSources[0];
+                backgroundSource = audioSources[1];
+                backgroundSource.clip = clips[1];
+                backgroundSource.volume = 0.7f;
+                beatSource.clip = clips[0];
+                break;
+            case 1:
+                Octopus.SetActive(true);
+                Octopus.transform.position += new Vector3(100, 0.0f, 0.0f);
+                wasd.SetActive(true);
+                wasd.transform.position += new Vector3(100, 0.0f, 0.0f);
+                Lobster.SetActive(true);
+                Lobster.transform.position += new Vector3(200, 0.0f, 0.0f);
+                space.SetActive(true);
+                space.transform.position += new Vector3(200, 0.0f, 0.0f);
+                Starfish.SetActive(false);
+                arrows.SetActive(false);
+                
+                // 음악 세팅
+                audioSources = GetComponents<AudioSource>();
+                beatSource = audioSources[0];
+                backgroundSource = audioSources[1];
+                backgroundSource.clip = clips[1];
+                backgroundSource.volume = 0.7f;
+                beatSource.clip = clips[0];
+                break;
+            case 2:
+                Octopus.SetActive(true);
+                wasd.SetActive(true);
+                Lobster.SetActive(true);
+                space.SetActive(true);
+                Starfish.SetActive(true);
+                arrows.SetActive(true);
+                
+                // 음악 세팅
+                audioSources = GetComponents<AudioSource>();
+                beatSource = audioSources[0];
+                backgroundSource = audioSources[1];
+                backgroundSource.clip = clips[1];
+                backgroundSource.volume = 0.7f;
+                beatSource.clip = clips[0];
+                break;
+        }
+        var npcKeyImageObj = GameObject.FindGameObjectsWithTag("key");
+        npcKeyImages = new Image[npcKeyImageObj.Length];
+        for (int i = 0; i < npcKeyImageObj.Length; i++)
+        {
+            var image_ = npcKeyImageObj[i].GetComponent<Image>();
+            var index = keyMap[npcKeyImageObj[i].name];
+            npcKeyImages[index] = image_;
+        }
+        uiImages = UICanvas.GetComponentsInChildren<Image>();
+        var uiImageObjs = GameObject.FindGameObjectsWithTag("uikey");
+        uiImages = new Image[uiImageObjs.Length];
+        for (int i = 0; i < uiImageObjs.Length; i++)
+        {
+            var image_ = uiImageObjs[i].GetComponent<Image>();
+            var index = keyMap[uiImageObjs[i].name];
+            uiImages[index] = image_;
+        }
+        var npcImagesObjs = GameObject.FindGameObjectsWithTag("NPC");
+        npcImages = new Image[npcImagesObjs.Length];
+        for (int i = 0; i < npcImagesObjs.Length; i++)
+        {
+            string msg = $"{npcImagesObjs[i].name}: {i}";
+            Debug.Log(msg);
+            npcImages[i] = npcImagesObjs[i].GetComponent<Image>();
+            npcImages[i].enabled = false;
+        }
+        foreach (var i in uiImages) i.enabled = false;
+        foreach (var i in npcKeyImages) i.enabled = false;
 
+        var textObject = GameObject.Find("MessageObject");
+        yourTurn = textObject.GetComponentInChildren<Text>();
+        yourTurn.enabled = false;
     }
     void NextStage()
     {
@@ -187,18 +323,83 @@ public class IngameScene : MonoBehaviour
         //1
 
         //start
-        StartCoroutine(Process());
+        // sequence = TestSequence();
+        // StartCoroutine(sequence);
+        sequence = Process();
+        StartCoroutine(sequence);
     }
     IEnumerator Process()
     {
+        var waitForSeconds = new WaitForSeconds(2.0f);
+        var waitForPart = new WaitForSeconds(1.5f);
+        var waitForSeconds2 = new WaitForSeconds(0.95f);
+        var waitForSeconds3 = new WaitForSeconds(0.05f);
+        
+        backgroundSource.Play();
+        yield return waitForSeconds;
+        
+        foreach (var turn in notes)
+        {
+            var combo = new List<KeyCode>();
+            int noteIndex = 0;
+            foreach (var part in turn)
+            {
+                KeyCode prevCode;
+                foreach (var note in part)
+                {
+                    var note_ = keycodeMap[note];
+                    combo.Add(note_);
+                    // 노트에 따라 음이 달라지면 클립도 변경해야한다.
+                    beatSource.clip = clips[0];
+                    beatSource.Play();
+                    prevCode = note_;
+                    npcKeyImages[noteMap[note_]].enabled = true;
+                    yield return waitForSeconds2;
+                    npcKeyImages[noteMap[note_]].enabled = false;
+                    yield return waitForSeconds3;
+                }
+                yield return waitForPart;   
+            }
+            // your turn!
+            yourTurn.enabled = true;
+            yield return waitForSeconds3;
+            
+            foreach (var note in combo)
+            {
+                yield return new WaitUntil(() => Input.anyKeyDown);
+                if (Input.GetKeyDown(note))
+                {
+                    beatSource.Play();
+                    uiImages[noteMap[note]].enabled = true;
+                    //yield return waitForSeconds2;
+                    yield return waitForSeconds3;
+                    uiImages[noteMap[note]].enabled = false;
+                }
+                else
+                {
+                    StartCoroutine(failure());
+                }
+            }
+            yourTurn.enabled = false;
+            yield return waitForSeconds2;
+        }
         yield return null;
         //NPC TURN
         yield return null;
         //1스테이지 일 경우 your 턴 표시
         //플레이어 턴
-
+        
         //성공,실패 처리
         yield return null;
+        if (stageIndex < 1)
+        {
+            NextStage();            
+        }
+        else
+        {
+            GameManager.instance.endingType = EndingType.Happy;
+            GameManager.instance.LoadScene("05.EndingScene");
+        }
         //다음 턴이 있으면 다음턴 실행
         //없으면 스테이지 클리어 연출
 

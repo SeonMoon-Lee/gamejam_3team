@@ -9,9 +9,11 @@ public class FadeInOut : MonoBehaviour
     public Color curColor;
     public Color targetColor;
     public float duration = 1;
+    public bool isPlayOnAwake = true;
     void Start()
     {
-        StartCoroutine(Fade());
+        if(isPlayOnAwake)
+            StartCoroutine(Fade());
     }
 
     private IEnumerator Fade()
@@ -26,5 +28,9 @@ public class FadeInOut : MonoBehaviour
         }
         yield return null;
 
+    }
+    public void Play()
+    {
+        StartCoroutine(Fade());
     }
 }

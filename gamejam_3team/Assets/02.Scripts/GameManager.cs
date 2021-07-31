@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
 
     public EndingType endingType = EndingType.Bad;
     public int StageIndex = 0;
+    public FadeInOut FadeImage;
     private void Awake()
     {
         if (instance == null)
@@ -52,9 +53,21 @@ public class GameManager : MonoBehaviour
     }
     public void LoadScene(string name)
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(name);
+        FadeImage.curColor = Color.clear;
+        FadeImage.targetColor = Color.black;
+        FadeImage.Play();
+        StartCoroutine(LoadSceneAsync(name));
     }
+    IEnumerator LoadSceneAsync(string name)
+    {
+        var request = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(name);
+        yield return request;
 
+        FadeImage.targetColor = Color.clear;
+        FadeImage.curColor = Color.black;
+        FadeImage.Play();
+
+    }
     public void SetStage(int idx) { StageIndex = idx; }
     //NoteData를 반환하는게 베스트?
     public int GetCurrentStage() { return StageIndex; }

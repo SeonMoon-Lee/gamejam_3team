@@ -28,7 +28,7 @@ public class EndingScene : MonoBehaviour
 
     public void OnClickRetry()
     {
-        //GameManager.instance.LoadScene("02.IngameScene");
+        GameManager.instance.LoadScene("02.IngameScene");
     }
     public void OnClickTitle()
     {

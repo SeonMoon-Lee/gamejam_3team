@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public EndingType endingType = EndingType.Bad;
     public int StageIndex = 0;
     public FadeInOut FadeImage;
+    public AudioSource bgm;
+    public List<AudioClip> clips;
     private void Awake()
     {
         if (instance == null)
@@ -50,6 +52,15 @@ public class GameManager : MonoBehaviour
         //StepData 는 startTime, expireTime, List<KeyCode>가 담겨져 있으면 어떨까?
 
 
+    }
+    public void SetBgm(string name)
+    {
+        bgm.clip = clips.Find(_ => _.name == name);
+        bgm.Play();
+    }
+    public void StopBgm()
+    {
+        bgm.Stop();
     }
     public void LoadScene(string name)
     {

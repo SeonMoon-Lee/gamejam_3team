@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class StartScene : MonoBehaviour
 {
+    private void Start()
+    {
+        GameManager.instance.SetBgm("track01");
+    }
     public void OnClickStart()
     {
         GameManager.instance.LoadScene("03.StoryScene");

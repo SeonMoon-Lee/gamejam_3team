@@ -7,6 +7,7 @@ public class HelpScene : MonoBehaviour
     // Start is called before the first frame update
     IEnumerator Start()
     {
+        GameManager.instance.StopBgm();
         yield return new WaitForSeconds(5f);
 
         GameManager.instance.LoadScene("02.IngameScene");

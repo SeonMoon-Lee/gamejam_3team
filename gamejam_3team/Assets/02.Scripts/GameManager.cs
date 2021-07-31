@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Networking;
 public enum EndingType
 {
     Bad,
@@ -11,10 +13,11 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;
 
     public EndingType endingType = EndingType.Bad;
-    public int StageIndex = 0;
+    public int StageId = 1;
     public FadeInOut FadeImage;
     public AudioSource bgm;
     public List<AudioClip> clips;
+    private Dictionary<int, List<NoteData>> stageMap = new Dictionary<int, List<NoteData>>();
     private void Awake()
     {
         if (instance == null)
@@ -30,7 +33,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(ConnectGoogleSheet("https://docs.google.com/spreadsheets/d/1qCImmI0rqJFvqHx260oQxOcp8iZcIwGoivc-Pe3HK4s/export?format=csv"));
     }
 
     // Update is called once per frame
@@ -41,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     public void InitValues()
     {
-        StageIndex = 0;
+        StageId = 1;
         endingType = EndingType.Bad;
     }
     public void InitDatas()
@@ -79,8 +82,36 @@ public class GameManager : MonoBehaviour
         FadeImage.Play();
 
     }
-    public void SetStage(int idx) { StageIndex = idx; }
+    public void SetStage(int idx) { StageId = idx; }
     //NoteData를 반환하는게 베스트?
-    public int GetCurrentStage() { return StageIndex; }
+    public List<NoteData> GetCurrentStage() { return stageMap[StageId]; }
 
+    IEnumerator ConnectGoogleSheet(string url)
+    {
+        var request = UnityWebRequest.Get(url);
+        yield return request.SendWebRequest();
+        if (string.IsNullOrEmpty(request.error))
+        {
+            string data = request.downloadHandler.text;
+
+            Debug.Log(data);
+            NoteData[] noteDatas = CSVSerializer.Deserialize<NoteData>(data);
+
+            List<NoteData> notelist = new List<NoteData>(noteDatas);
+
+            for(int i =1; i <=3; ++i)
+            {
+                stageMap.Add(i,notelist.Where(_ => _.idx == i).ToList());
+            }
+        }
+    }
+}
+public class NoteData
+{
+    //idx	turn	part	npc_number	key
+    public int idx;
+    public int turn;
+    public int part;
+    public int npc_number;
+    public string key;
 }

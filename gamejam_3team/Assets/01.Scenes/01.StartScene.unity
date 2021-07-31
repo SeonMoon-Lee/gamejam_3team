@@ -981,6 +981,7 @@ MonoBehaviour:
   from: {x: 0, y: 0, z: 0}
   to: {x: 1, y: 1, z: 1}
   duration: 1
+  delay: 0
 --- !u!1 &1094345335
 GameObject:
   m_ObjectHideFlags: 0

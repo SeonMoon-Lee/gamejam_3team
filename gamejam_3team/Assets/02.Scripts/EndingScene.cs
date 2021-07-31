@@ -19,7 +19,7 @@ public class EndingScene : MonoBehaviour
     {
         if (GameManager.instance.endingType == EndingType.Bad)
         {
-            badImage.sprite = badBackgrounds[GameManager.instance.StageIndex];
+            badImage.sprite = badBackgrounds[GameManager.instance.StageId-1];
             BadEnding.SetActive(true);
             yield return new WaitForSeconds(3f);
 

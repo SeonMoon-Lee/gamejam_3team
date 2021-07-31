@@ -21,17 +21,19 @@ public class EndingScene : MonoBehaviour
         {
             badImage.sprite = badBackgrounds[GameManager.instance.StageIndex];
             BadEnding.SetActive(true);
+            yield return new WaitForSeconds(3f);
+
         }
         else
         {
             HappyEnding.SetActive(true);
             yield return new WaitForSeconds(1.0f);
-            GameManager.instance.SetBgm("track01");
+            GameManager.instance.SetBgm("track4-loop");
+            yield return new WaitForSeconds(3f);
+            GameManager.instance.StopBgm();
+            Credit.SetActive(true);
         }
 
-        yield return new WaitForSeconds(3f);
-        GameManager.instance.StopBgm();
-        Credit.SetActive(true);
         ButtonGroup.SetActive(true);
     }
 

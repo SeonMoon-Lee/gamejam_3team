@@ -25,6 +25,10 @@ public class IngameScene : MonoBehaviour
     Dictionary<string, KeyCode> keycodeMap;
     IEnumerator sequence;
     public GameObject Octopus, wasd, Lobster, space, Starfish, arrows;
+
+    public GameObject StageClearPopup;
+
+    public TweenScale OctopusTween, LobsterTween, StarfishTween;
     // Start is called before the first frame update
     void Start()
     {
@@ -241,7 +245,7 @@ public class IngameScene : MonoBehaviour
         }
         
     }
-    void NextStage()
+    public void NextStage()
     {
         GameManager.instance.SetStage(++stageId);
         GameManager.instance.LoadScene("02.IngameScene");
@@ -324,7 +328,8 @@ public class IngameScene : MonoBehaviour
         yield return null;
         if (stageId <= 3)
         {
-            NextStage();            
+            //NextStage();    
+            StageClearPopup.SetActive(true);
         }
         else
         {

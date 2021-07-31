@@ -10,8 +10,19 @@ public class TweenScale : MonoBehaviour
     public Vector3 to;
     public float duration = 1;
     public float delay = 0;
+    public bool isPlayOnAwake = true;
+
     // Start is called before the first frame update
-    IEnumerator Start()
+    void Start()
+    {
+        if (isPlayOnAwake)
+            StartCoroutine(Tween());
+    }
+    public void Play()
+    {
+        StartCoroutine(Tween());
+    }
+    IEnumerator Tween()
     {
         float time = 0;
         target.localScale = from;

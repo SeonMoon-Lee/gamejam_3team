@@ -10,8 +10,18 @@ public class TweenPosition : MonoBehaviour
     public Vector3 to;
     public float duration = 1;
     public float delay = 0;
-    // Start is called before the first frame update
-    IEnumerator Start()
+    public bool isPlayOnAwake = true;
+
+    void Start()
+    {
+        if (isPlayOnAwake)
+            StartCoroutine(Tween());
+    }
+    public void Play()
+    {
+        StartCoroutine(Tween());
+    }
+    IEnumerator Tween()
     {
         float time = 0;
         target.localPosition = from;

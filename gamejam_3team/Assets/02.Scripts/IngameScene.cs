@@ -1,9 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using TreeEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,7 +19,6 @@ public class IngameScene : MonoBehaviour
 
     bool turn = false;
     int noteIndex = 0;
-    // KeyCode[] notes;
     List<List<List<string>>> notes;
     Dictionary<KeyCode, int> noteMap;
     Dictionary<String, int> keyMap;
@@ -115,66 +111,7 @@ public class IngameScene : MonoBehaviour
 
         stageId = GameManager.instance.StageId;
     }
-
-    /*
-    IEnumerator TestSequence()
-    {
-        var waitForSeconds = new WaitForSeconds(2.0f);
-        var waitForSeconds2 = new WaitForSeconds(0.95f);
-        var waitForSeconds3 = new WaitForSeconds(0.05f);
-        
-        backgroundSource.Play();
-        yield return waitForSeconds;
-        
-        foreach (var t in notes)
-        {
-            // 노트에 따라 음이 달라지면 클립도 변경해야한다.
-            beatSource.clip = clips[0];
-            beatSource.Play();
-            npcKeyImages[noteMap[t]].enabled = true;
-            yield return waitForSeconds2;
-            npcKeyImages[noteMap[t]].enabled = false;
-            yield return waitForSeconds3;
-        }
-        
-        turn = true;
-        while (turn)
-        {
-            yield return waitForSeconds2;
-        }
-        foreach (var i in uiImages) i.enabled = false;
-
-        GameManager.instance.endingType = EndingType.Happy;
-        GameManager.instance.LoadScene("05.EndingScene");
-    }*/
-
-    /*
-    void playerKeyCombo(KeyCode[] combo)
-    {
-        if (turn && Input.anyKeyDown)
-        {
-            timer += Time.deltaTime;
-            if (timer > waitTime) failure();
-            if (Input.GetKeyDown(notes[noteIndex]))
-            {
-                beatSource.Play();
-                uiImages[noteMap[notes[noteIndex]]].enabled = true;
-                noteIndex++;
-                timer = 0.0f;
-            }
-            else
-            {
-                StartCoroutine(failure());
-            }
-            
-            if (noteIndex >= notes.Length)
-            {
-                turn = false;
-                noteIndex = 0;
-                timer = 0.0f;
-            }
-        }
-    }*/
+    
     IEnumerator failure()
     {
         turn = false;
@@ -200,7 +137,7 @@ public class IngameScene : MonoBehaviour
         }
     }
 
-    List<List<List<string>>> getNotes(int stage)
+    List<List<List<string>>> getNotes()
     {
         var notes_ = GameManager.instance.GetCurrentStage();
         int turn = 0, part = 0;
@@ -233,13 +170,6 @@ public class IngameScene : MonoBehaviour
             
         }
         
-        List<KeyCode[]> notes = new List<KeyCode[]>
-        {
-            new KeyCode[] {KeyCode.W, KeyCode.W, KeyCode.S, KeyCode.D, KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D},
-            new KeyCode[] {KeyCode.W, KeyCode.Space, KeyCode.S, KeyCode.D, KeyCode.Space, KeyCode.A, KeyCode.S, KeyCode.D}
-        };
-        
-        // return notes[stage];
         return data;
     }
 
@@ -247,11 +177,8 @@ public class IngameScene : MonoBehaviour
     private int stageId;
     void SetupStage()
     {
-        // stageIndex = GameManager.instance.StageIndex;
-        
-        
         //0,1,2 스테이지 노트리스트를 가져온다.
-        notes = getNotes(stageId);
+        notes = getNotes();
 
         //해산물들을 스테이지에 따라 Active 해준다.
         AudioSource[] audioSources;
@@ -318,8 +245,6 @@ public class IngameScene : MonoBehaviour
     {
         GameManager.instance.SetStage(++stageId);
         GameManager.instance.LoadScene("02.IngameScene");
-        //SetupStage();
-        //StartCoroutine(ReadyCount());
     }
     IEnumerator ReadyCount()
     {
@@ -331,8 +256,6 @@ public class IngameScene : MonoBehaviour
         //1
 
         //start
-        // sequence = TestSequence();
-        // StartCoroutine(sequence);
         sequence = Process();
         StartCoroutine(sequence);
     }

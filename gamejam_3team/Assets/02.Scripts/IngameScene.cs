@@ -28,7 +28,7 @@ public class IngameScene : MonoBehaviour
     Dictionary<String, int> keyMap;
     Dictionary<string, KeyCode> keycodeMap;
     IEnumerator sequence;
-    
+    public GameObject Octopus, wasd, Lobster, space, Starfish, arrows;
     // Start is called before the first frame update
     void Start()
     {
@@ -69,10 +69,53 @@ public class IngameScene : MonoBehaviour
         keycodeMap = new Dictionary<string, KeyCode>
         {
             {"W", KeyCode.W}, {"A", KeyCode.A}, {"S", KeyCode.S}, {"D", KeyCode.D}, {"space", KeyCode.Space},
-            {"↑", KeyCode.UpArrow}, {"←", KeyCode.LeftArrow}, {"↓", KeyCode.DownArrow}, {"→", KeyCode.RightArrow}
+            //{"↑", KeyCode.UpArrow}, {"←", KeyCode.LeftArrow}, {"↓", KeyCode.DownArrow}, {"→", KeyCode.RightArrow}
+            {"up", KeyCode.UpArrow}, {"left", KeyCode.LeftArrow}, {"down", KeyCode.DownArrow}, {"right", KeyCode.RightArrow}
         };
+
+        Octopus = GameObject.Find("OctopusObject");
+        wasd = GameObject.Find("wasd");
+        Lobster = GameObject.Find("LobsterObject");
+        space = GameObject.Find("space");
+        Starfish = GameObject.Find("StarfishObject");
+        arrows = GameObject.Find("arrows");
+
+        var npcKeyImageObj = GameObject.FindGameObjectsWithTag("key");
+        npcKeyImages = new Image[npcKeyImageObj.Length];
+        for (int i = 0; i < npcKeyImageObj.Length; i++)
+        {
+            var image_ = npcKeyImageObj[i].GetComponent<Image>();
+            var index = keyMap[npcKeyImageObj[i].name];
+            npcKeyImages[index] = image_;
+        }
+        uiImages = UICanvas.GetComponentsInChildren<Image>();
+        var uiImageObjs = GameObject.FindGameObjectsWithTag("uikey");
+        uiImages = new Image[uiImageObjs.Length];
+        for (int i = 0; i < uiImageObjs.Length; i++)
+        {
+            var image_ = uiImageObjs[i].GetComponent<Image>();
+            var index = keyMap[uiImageObjs[i].name];
+            uiImages[index] = image_;
+        }
+        var npcImagesObjs = GameObject.FindGameObjectsWithTag("NPC");
+        npcImages = new Image[npcImagesObjs.Length];
+        for (int i = 0; i < npcImagesObjs.Length; i++)
+        {
+            string msg = $"{npcImagesObjs[i].name}: {i}";
+            Debug.Log(msg);
+            npcImages[i] = npcImagesObjs[i].GetComponent<Image>();
+            npcImages[i].enabled = false;
+        }
+        foreach (var i in uiImages) i.enabled = false;
+        foreach (var i in npcKeyImages) i.enabled = false;
+
+        var textObject = GameObject.Find("MessageObject");
+        yourTurn = textObject.GetComponentInChildren<Text>();
+        yourTurn.enabled = false;
+
+        stageId = GameManager.instance.StageId;
     }
-    
+
     /*
     IEnumerator TestSequence()
     {
@@ -201,26 +244,20 @@ public class IngameScene : MonoBehaviour
     }
 
     //참고
-    private int stageIndex;
+    private int stageId;
     void SetupStage()
     {
         // stageIndex = GameManager.instance.StageIndex;
-        stageIndex = 0;
+        
         
         //0,1,2 스테이지 노트리스트를 가져온다.
-        notes = getNotes(stageIndex);
+        notes = getNotes(stageId);
 
         //해산물들을 스테이지에 따라 Active 해준다.
-        var Octopus = GameObject.Find("OctopusObject");
-        var wasd = GameObject.Find("wasd");
-        var Lobster = GameObject.Find("LobsterObject");
-        var space = GameObject.Find("space");
-        var Starfish = GameObject.Find("StarfishObject");
-        var arrows = GameObject.Find("arrows");
         AudioSource[] audioSources;
-        switch (stageIndex)
+        switch (stageId)
         {
-            case 0:
+            case 1:
                 Octopus.SetActive(true);
                 Octopus.transform.position += new Vector3(300, 0.0f, 0.0f);
                 wasd.SetActive(true);
@@ -238,7 +275,7 @@ public class IngameScene : MonoBehaviour
                 backgroundSource.volume = 0.7f;
                 beatSource.clip = clips[0];
                 break;
-            case 1:
+            case 2:
                 Octopus.SetActive(true);
                 Octopus.transform.position += new Vector3(100, 0.0f, 0.0f);
                 wasd.SetActive(true);
@@ -258,7 +295,7 @@ public class IngameScene : MonoBehaviour
                 backgroundSource.volume = 0.7f;
                 beatSource.clip = clips[0];
                 break;
-            case 2:
+            case 3:
                 Octopus.SetActive(true);
                 wasd.SetActive(true);
                 Lobster.SetActive(true);
@@ -275,43 +312,14 @@ public class IngameScene : MonoBehaviour
                 beatSource.clip = clips[0];
                 break;
         }
-        var npcKeyImageObj = GameObject.FindGameObjectsWithTag("key");
-        npcKeyImages = new Image[npcKeyImageObj.Length];
-        for (int i = 0; i < npcKeyImageObj.Length; i++)
-        {
-            var image_ = npcKeyImageObj[i].GetComponent<Image>();
-            var index = keyMap[npcKeyImageObj[i].name];
-            npcKeyImages[index] = image_;
-        }
-        uiImages = UICanvas.GetComponentsInChildren<Image>();
-        var uiImageObjs = GameObject.FindGameObjectsWithTag("uikey");
-        uiImages = new Image[uiImageObjs.Length];
-        for (int i = 0; i < uiImageObjs.Length; i++)
-        {
-            var image_ = uiImageObjs[i].GetComponent<Image>();
-            var index = keyMap[uiImageObjs[i].name];
-            uiImages[index] = image_;
-        }
-        var npcImagesObjs = GameObject.FindGameObjectsWithTag("NPC");
-        npcImages = new Image[npcImagesObjs.Length];
-        for (int i = 0; i < npcImagesObjs.Length; i++)
-        {
-            string msg = $"{npcImagesObjs[i].name}: {i}";
-            Debug.Log(msg);
-            npcImages[i] = npcImagesObjs[i].GetComponent<Image>();
-            npcImages[i].enabled = false;
-        }
-        foreach (var i in uiImages) i.enabled = false;
-        foreach (var i in npcKeyImages) i.enabled = false;
-
-        var textObject = GameObject.Find("MessageObject");
-        yourTurn = textObject.GetComponentInChildren<Text>();
-        yourTurn.enabled = false;
+        
     }
     void NextStage()
     {
-        GameManager.instance.SetStage(++stageIndex);
-        SetupStage();
+        GameManager.instance.SetStage(++stageId);
+        GameManager.instance.LoadScene("02.IngameScene");
+        //SetupStage();
+        //StartCoroutine(ReadyCount());
     }
     IEnumerator ReadyCount()
     {
@@ -391,7 +399,7 @@ public class IngameScene : MonoBehaviour
         
         //성공,실패 처리
         yield return null;
-        if (stageIndex < 1)
+        if (stageId <= 3)
         {
             NextStage();            
         }

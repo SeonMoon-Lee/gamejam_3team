@@ -131,7 +131,7 @@ public class IngameScene : MonoBehaviour
         GameManager.instance.LoadScene("05.EndingScene");
     }
 
-    float timer = 0.0f;
+    /*float timer = 0.0f;
     float waitTime = 0.7f;
     // Update is called once per frame
     void Update()
@@ -145,7 +145,7 @@ public class IngameScene : MonoBehaviour
             PausePopup.SetActive(true);
             Time.timeScale = 0;
         }
-    }
+    }*/
 
     List<List<List<string>>> getNotes()
     {
@@ -188,6 +188,7 @@ public class IngameScene : MonoBehaviour
     private int stageId;
     void SetupStage()
     {
+        // GameManager.instance.SetStage(2);
         //0,1,2 스테이지 노트리스트를 가져온다.
         notes = getNotes();
 
@@ -273,8 +274,8 @@ public class IngameScene : MonoBehaviour
     IEnumerator Process()
     {
         var waitForSeconds = new WaitForSeconds(2.0f);
-        var waitForPart = new WaitForSeconds(1.5f);
-        var waitForSeconds2 = new WaitForSeconds(0.95f);
+        var waitForPart = new WaitForSeconds(0.75f);
+        var waitForSeconds2 = new WaitForSeconds(0.7f);
         var waitForSeconds3 = new WaitForSeconds(0.05f);
 
         backgroundSource.Play();

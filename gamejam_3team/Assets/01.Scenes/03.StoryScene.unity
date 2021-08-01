@@ -223,6 +223,7 @@ MonoBehaviour:
   to: {x: 1, y: 1, z: 1}
   duration: 0.25
   delay: 0
+  isPlayOnAwake: 1
 --- !u!114 &67977290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,6 +662,7 @@ MonoBehaviour:
   to: {x: 1, y: 1, z: 1}
   duration: 0.25
   delay: 0
+  isPlayOnAwake: 1
 --- !u!114 &1015039600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -875,6 +877,7 @@ MonoBehaviour:
   to: {x: 1, y: 1, z: 1}
   duration: 0.25
   delay: 0
+  isPlayOnAwake: 1
 --- !u!114 &1070232275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1300,6 +1303,7 @@ MonoBehaviour:
   to: {x: 1, y: 1, z: 1}
   duration: 0.25
   delay: 0
+  isPlayOnAwake: 1
 --- !u!114 &1387035599
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1514,6 +1518,7 @@ MonoBehaviour:
   to: {x: 1, y: 1, z: 1}
   duration: 0.25
   delay: 0
+  isPlayOnAwake: 1
 --- !u!114 &1493264396
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1728,6 +1733,7 @@ MonoBehaviour:
   to: {x: 1, y: 1, z: 1}
   duration: 0.25
   delay: 0
+  isPlayOnAwake: 1
 --- !u!114 &1761168391
 MonoBehaviour:
   m_ObjectHideFlags: 0

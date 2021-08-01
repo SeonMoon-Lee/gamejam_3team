@@ -22,7 +22,7 @@ public class IngameScene : MonoBehaviour
     Image ruReadyImage;
     Image goImage;
 
-    List<List<List<string>>> notes;
+    List<List<List<NoteData>>> notes;
     Dictionary<KeyCode, int> noteMap;
     Dictionary<String, int> keyMap;
     Dictionary<string, KeyCode> keycodeMap;
@@ -32,7 +32,8 @@ public class IngameScene : MonoBehaviour
     public GameObject StageClearPopup;
     public GameObject PausePopup;
 
-    public TweenScale OctopusTween, LobsterTween, StarfishTween;
+    public Transform OctopusTween, LobsterTween, StarfishTween;
+    public Transform[] Npcies;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,7 +41,15 @@ public class IngameScene : MonoBehaviour
         SetupStage();
         StartCoroutine(ReadyCount());
     }
-
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PausePopup.SetActive(true);
+            Time.timeScale = 0;
+            backgroundSource.Pause();
+        }
+    }
     void SetInit()
     {
         keyMap = new Dictionary<string, int>
@@ -152,6 +161,7 @@ public class IngameScene : MonoBehaviour
         foreach (var npc in npcImages)
         {
             npc.enabled = true;
+            npc.transform.localScale = Vector3.one * 1.2f;
         }
         
         yield return new WaitForSeconds(5.0f);
@@ -159,34 +169,34 @@ public class IngameScene : MonoBehaviour
         GameManager.instance.LoadScene("05.EndingScene");
     }
 
-    List<List<List<string>>> getNotes()
+    List<List<List<NoteData>>> getNotes()
     {
         var notes = GameManager.instance.GetCurrentStage();
         int turn = 0, part = 0;
-        List<List<List<string>>> data = new List<List<List<string>>>();
-        List<List<string>> p_ = new List<List<string>>();
-        List<string> k_ = new List<string>();
+        List<List<List<NoteData>>> data = new List<List<List<NoteData>>>();
+        List<List<NoteData>> p_ = new List<List<NoteData>>();
+        List<NoteData> k_ = new List<NoteData>();
         p_.Add(k_);
         data.Add(p_);
         foreach (var note in notes)
         {
             if (note.turn - 1 > turn)
             {
-                p_ = new List<List<string>>();
-                k_ = new List<string> {note.key};
+                p_ = new List<List<NoteData>>();
+                k_ = new List<NoteData> {note};
                 p_.Add(k_);
                 data.Add(p_);
                 turn++;
             }
             else if (note.part - 1 > part)
             {
-                k_ = new List<string> {note.key};
+                k_ = new List<NoteData> {note};
                 p_.Add(k_);
                 part++;
             }
             else
             {
-                k_.Add(note.key);
+                k_.Add(note);
             }
         }
         return data;
@@ -341,7 +351,28 @@ public class IngameScene : MonoBehaviour
             {
                 foreach (var note in part)
                 {
-                    var note_ = keycodeMap[note];
+                    switch(note.npc_number)
+                    {
+                        case 1:
+                            OctopusTween.localScale = Vector3.one * 1.1f;
+                            LobsterTween.localScale = StarfishTween.localScale = Vector3.one;
+                            Npcies[0].Rotate(Vector3.up * 180);
+                            Npcies[1].localRotation = Npcies[2].localRotation = Quaternion.identity;
+                            break;
+                        case 2:
+                            LobsterTween.localScale = Vector3.one * 1.1f;
+                            OctopusTween.localScale = StarfishTween.localScale = Vector3.one;
+                            Npcies[1].Rotate(Vector3.up * 180);
+                            Npcies[0].localRotation = Npcies[2].localRotation = Quaternion.identity;
+                            break;
+                        case 3:
+                            StarfishTween.localScale = Vector3.one * 1.1f;
+                            LobsterTween.localScale = OctopusTween.localScale = Vector3.one;
+                            Npcies[2].Rotate(Vector3.up * 180);
+                            Npcies[0].localRotation = Npcies[2].localRotation = Quaternion.identity;
+                            break;
+                    }
+                    var note_ = keycodeMap[note.key];
                     combo.Add(note_);
                     // 노트에 따라 음이 달라지면 클립도 변경해야한다.
                     beatSource.clip = clips[0];
@@ -358,6 +389,9 @@ public class IngameScene : MonoBehaviour
                 }
                 yield return waitForPart;
             }
+            OctopusTween.localScale = LobsterTween.localScale = StarfishTween.localScale = Vector3.one;
+
+            Npcies[0].localRotation = Npcies[1].localRotation = Npcies[2].localRotation = Quaternion.identity;
             // your turn!
             yourTurnText.enabled = true;
             yield return waitForSeconds3;
@@ -408,37 +442,46 @@ public class IngameScene : MonoBehaviour
 
     public void OnClickContinue()
     {
+        GameManager.instance.PlayButtonSound();
         PausePopup.SetActive(false);
         StartCoroutine(Continue());
     }
     IEnumerator Continue()
     {
-        yield return new WaitForSecondsRealtime(1f);
+        var waitReadyGo = new WaitForSecondsRealtime(1.0f);
+        ruReadyImage.enabled = true;
+        yield return waitReadyGo;
+        ruReadyImage.enabled = false;
+        goImage.enabled = true;
+        yield return waitReadyGo;
+        goImage.enabled = false;
 
-        Debug.Log("Ready");
-        yield return new WaitForSecondsRealtime(1f);
-
-        Debug.Log("go");
         Time.timeScale = 1;
+        backgroundSource.Play();
     }
     public void OnClickTitle()
     {
+        GameManager.instance.PlayButtonSound();
         PausePopup.transform.Find("MainPopup").gameObject.SetActive(true);
     }
     public void GoTitle()
     {
+        GameManager.instance.PlayButtonSound();
         GameManager.instance.LoadScene("01.StartScene");
     }
     public void OnClickQuit()
     {
+        GameManager.instance.PlayButtonSound();
         PausePopup.transform.Find("ExitPopup").gameObject.SetActive(true);
     }
     public void Quit()
     {
+        GameManager.instance.PlayButtonSound();
         Application.Quit();
     }
     public void ClosePopup(GameObject gobj)
-    { 
+    {
+        GameManager.instance.PlayButtonSound();
         gobj.SetActive(false); 
     }
 }

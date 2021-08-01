@@ -10,6 +10,7 @@ public class StartScene : MonoBehaviour
     }
     public void OnClickStart()
     {
+        GameManager.instance.PlayButtonSound();
         GameManager.instance.LoadScene("03.StoryScene");
     }
 }

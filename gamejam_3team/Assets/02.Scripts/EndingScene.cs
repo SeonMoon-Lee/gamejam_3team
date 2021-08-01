@@ -40,10 +40,12 @@ public class EndingScene : MonoBehaviour
 
     public void OnClickRetry()
     {
+        GameManager.instance.PlayButtonSound();
         GameManager.instance.LoadScene("02.IngameScene");
     }
     public void OnClickTitle()
     {
+        GameManager.instance.PlayButtonSound();
         GameManager.instance.LoadScene("01.StartScene");
     }
     

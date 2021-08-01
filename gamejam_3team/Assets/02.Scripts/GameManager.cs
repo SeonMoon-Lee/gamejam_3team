@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public int StageId = 1;
     public FadeInOut FadeImage;
     public AudioSource bgm;
+    public AudioSource buttonSound;
     public List<AudioClip> clips;
     private Dictionary<int, List<NoteData>> stageMap = new Dictionary<int, List<NoteData>>();
     private void Awake()
@@ -64,6 +65,10 @@ public class GameManager : MonoBehaviour
     public void StopBgm()
     {
         bgm.Stop();
+    }
+    public void PlayButtonSound()
+    {
+        buttonSound.Play();
     }
     public void LoadScene(string name)
     {

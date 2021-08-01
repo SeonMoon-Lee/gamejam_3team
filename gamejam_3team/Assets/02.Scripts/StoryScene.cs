@@ -35,6 +35,7 @@ public class StoryScene : MonoBehaviour
 
     public void OnClickPlay()
     {
+        GameManager.instance.PlayButtonSound();
         GameManager.instance.LoadScene("04.HelpScene");
     }
 }

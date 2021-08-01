@@ -429,7 +429,7 @@ public class IngameScene : MonoBehaviour
 
         //성공,실패 처리
         yield return null;
-        if (stageId <= 3)
+        if (stageId <= 2)
         {
             //NextStage(); 
             StageClearPopup.SetActive(true);

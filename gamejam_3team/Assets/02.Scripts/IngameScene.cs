@@ -255,6 +255,7 @@ public class IngameScene : MonoBehaviour
     }
     public void NextStage()
     {
+        GameManager.instance.StopBgm();
         GameManager.instance.SetStage(++stageId);
         GameManager.instance.LoadScene("02.IngameScene");
     }
@@ -382,8 +383,9 @@ public class IngameScene : MonoBehaviour
         yield return null;
         if (stageId <= 3)
         {
-            //NextStage();    
+            //NextStage(); 
             StageClearPopup.SetActive(true);
+            GameManager.instance.SetBgm("track4-loop");
         }
         else
         {

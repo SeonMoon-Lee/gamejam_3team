@@ -28,6 +28,8 @@ public class IngameScene : MonoBehaviour
     Dictionary<string, KeyCode> keycodeMap;
     Dictionary<KeyCode, AudioClip> beatMap;
     IEnumerator sequence;
+    private int stageId;
+
     public GameObject Octopus, wasd, Lobster, space, Starfish, arrows;
 
     public GameObject StageClearPopup;
@@ -213,7 +215,6 @@ public class IngameScene : MonoBehaviour
     }
 
     //참고
-    private int stageId;
     void SetupStage()
     {
         //0,1,2 스테이지 노트리스트를 가져온다.
@@ -357,8 +358,8 @@ public class IngameScene : MonoBehaviour
         int turnCount = 0;
         Dictionary<int, List<int>> closeTurnSoundsIndexis = new Dictionary<int, List<int>>();
         closeTurnSoundsIndexis.Add(1, new List<int>() { 0, 1, 2 });
-        closeTurnSoundsIndexis.Add(2, new List<int>() { 2, 3, 4, 5 });
-        closeTurnSoundsIndexis.Add(3, new List<int>() { 6, 7, 8, 9 });
+        closeTurnSoundsIndexis.Add(2, new List<int>() { 3, 4, 5, 6 });
+        closeTurnSoundsIndexis.Add(3, new List<int>() { 7, 8, 9, 10 });
 
 
         foreach (var turn in notes)
@@ -433,10 +434,12 @@ public class IngameScene : MonoBehaviour
                 }
             }
             yield return waitForSeconds2;
-            try{
+            try
+            {
                 beatSource.clip = closeTurnSounds[closeTurnSoundsIndexis[stageId][turnCount]];
                 beatSource.Play();
             }
+            catch { }
             turnCount++;
             yield return new WaitForSeconds(1);
         }

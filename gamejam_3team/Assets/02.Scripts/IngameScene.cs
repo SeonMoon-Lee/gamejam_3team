@@ -285,6 +285,8 @@ public class IngameScene : MonoBehaviour
     {
         var waitReadyGo = new WaitForSecondsRealtime(1.0f);
         ruReadyImage.enabled = true;
+        beatSource.clip = clips[14];
+        beatSource.Play();
         yield return waitReadyGo;
         ruReadyImage.enabled = false;
         goImage.enabled = true;
@@ -399,7 +401,9 @@ public class IngameScene : MonoBehaviour
             Npcies[0].localRotation = Npcies[1].localRotation = Npcies[2].localRotation = Quaternion.identity;
             // your turn!
             yourTurnText.enabled = true;
-            yield return waitForSeconds3;
+            beatSource.clip = clips[15];
+            beatSource.Play();
+            yield return waitForSeconds2;
             yourTurnText.enabled = false;
             foreach (var note in combo)
             {

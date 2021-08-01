@@ -434,6 +434,7 @@ public class IngameScene : MonoBehaviour
             //NextStage(); 
             StageClearPopup.SetActive(true);
             backgroundSource.Stop();
+            yield return new WaitForSecondsRealtime(2);
             GameManager.instance.SetBgm("track4-loop");
         }
         else

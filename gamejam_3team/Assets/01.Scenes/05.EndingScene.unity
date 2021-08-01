@@ -1546,7 +1546,7 @@ MonoBehaviour:
   target: {fileID: 1862234806}
   curColor: {r: 0, g: 0, b: 0, a: 0}
   targetColor: {r: 0, g: 0, b: 0, a: 0.47058824}
-  duration: 1
+  duration: 2
   isPlayOnAwake: 1
 --- !u!1 &2111084799
 GameObject:

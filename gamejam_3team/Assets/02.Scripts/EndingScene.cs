@@ -27,10 +27,6 @@ public class EndingScene : MonoBehaviour
         else
         {
             HappyEnding.SetActive(true);
-            yield return new WaitForSeconds(1.0f);
-            GameManager.instance.SetBgm("track4-loop");
-            yield return new WaitForSeconds(5f);
-            GameManager.instance.StopBgm();
             Credit.SetActive(true);
         }
 

@@ -21,6 +21,7 @@ public class IngameScene : MonoBehaviour
     Image yourTurnText;
     Image ruReadyImage;
     Image goImage;
+    public Image[] stageImages;
 
     List<List<List<NoteData>>> notes;
     Dictionary<KeyCode, int> noteMap;
@@ -287,6 +288,7 @@ public class IngameScene : MonoBehaviour
     IEnumerator ReadyCount()
     {
         var waitReadyGo = new WaitForSecondsRealtime(1.0f);
+        stageImages[stageId - 1].enabled = true;
         ruReadyImage.enabled = true;
         beatSource.clip = clips[14];
         beatSource.Play();

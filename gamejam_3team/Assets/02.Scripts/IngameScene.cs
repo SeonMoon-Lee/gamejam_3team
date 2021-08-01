@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Collections;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +16,9 @@ public class IngameScene : MonoBehaviour
 
     Image[] npcKeyImages;
     Image[] uiImages;
+    Image[] failImages;
     Image[] npcImages;
+    Image backgroundFailImage;
     Text yourTurn;
 
     bool turn = false;
@@ -59,7 +63,16 @@ public class IngameScene : MonoBehaviour
             {"UpkeyImageActive", 5},
             {"LeftkeyImageActive", 6},
             {"DownkeyImageActive", 7},
-            {"RightkeyImageActive", 8}
+            {"RightkeyImageActive", 8},
+            {"WkeyImageFail", 0},
+            {"AkeyImageFail", 1},
+            {"SkeyImageFail", 2},
+            {"DkeyImageFail", 3},
+            {"SpkeyImageFail", 4},
+            {"UpkeyImageFail", 5},
+            {"LeftkeyImageFail", 6},
+            {"DownkeyImageFail", 7},
+            {"RightkeyImageFail", 8}
         };
         noteMap = new Dictionary<KeyCode, int>
         {
@@ -70,7 +83,6 @@ public class IngameScene : MonoBehaviour
         keycodeMap = new Dictionary<string, KeyCode>
         {
             {"W", KeyCode.W}, {"A", KeyCode.A}, {"S", KeyCode.S}, {"D", KeyCode.D}, {"space", KeyCode.Space},
-            //{"↑", KeyCode.UpArrow}, {"←", KeyCode.LeftArrow}, {"↓", KeyCode.DownArrow}, {"→", KeyCode.RightArrow}
             {"up", KeyCode.UpArrow}, {"left", KeyCode.LeftArrow}, {"down", KeyCode.DownArrow}, {"right", KeyCode.RightArrow}
         };
 
@@ -83,94 +95,87 @@ public class IngameScene : MonoBehaviour
 
         var npcKeyImageObj = GameObject.FindGameObjectsWithTag("key");
         npcKeyImages = new Image[npcKeyImageObj.Length];
-        for (int i = 0; i < npcKeyImageObj.Length; i++)
+        foreach (var t in npcKeyImageObj)
         {
-            var image_ = npcKeyImageObj[i].GetComponent<Image>();
-            var index = keyMap[npcKeyImageObj[i].name];
-            npcKeyImages[index] = image_;
+            var image = t.GetComponent<Image>();
+            var index = keyMap[t.name];
+            npcKeyImages[index] = image;
         }
-        uiImages = UICanvas.GetComponentsInChildren<Image>();
         var uiImageObjs = GameObject.FindGameObjectsWithTag("uikey");
         uiImages = new Image[uiImageObjs.Length];
-        for (int i = 0; i < uiImageObjs.Length; i++)
+        foreach (var t in uiImageObjs)
         {
-            var image_ = uiImageObjs[i].GetComponent<Image>();
-            var index = keyMap[uiImageObjs[i].name];
-            uiImages[index] = image_;
+            var image = t.GetComponent<Image>();
+            var index = keyMap[t.name];
+            uiImages[index] = image;
+        }
+        var failImageObjs = GameObject.FindGameObjectsWithTag("failkey");
+        failImages = new Image[failImageObjs.Length];
+        foreach (var t in failImageObjs)
+        {
+            var image = t.GetComponent<Image>();
+            var index = keyMap[t.name];
+            failImages[index] = image;
         }
         var npcImagesObjs = GameObject.FindGameObjectsWithTag("NPC");
         npcImages = new Image[npcImagesObjs.Length];
-        for (int i = 0; i < npcImagesObjs.Length; i++)
+        for (var i = 0; i < npcImagesObjs.Length; i++)
         {
-            string msg = $"{npcImagesObjs[i].name}: {i}";
-            Debug.Log(msg);
             npcImages[i] = npcImagesObjs[i].GetComponent<Image>();
             npcImages[i].enabled = false;
         }
         foreach (var i in uiImages) i.enabled = false;
         foreach (var i in npcKeyImages) i.enabled = false;
+        foreach (var i in failImages) i.enabled = false;
 
         var textObject = GameObject.Find("MessageObject");
         yourTurn = textObject.GetComponentInChildren<Text>();
         yourTurn.enabled = false;
-
+        
+        var plantImagesObj = GameObject.Find("background-fail");
+        backgroundFailImage = plantImagesObj.GetComponent<Image>();
+        backgroundFailImage.enabled = false;
         stageId = GameManager.instance.StageId;
     }
 
-    IEnumerator failure()
+    IEnumerator Failure()
     {
         turn = false;
         StopCoroutine(sequence);
         backgroundSource.Stop();
+        backgroundFailImage.enabled = true;
         foreach (var npc in npcImages)
         {
             npc.enabled = true;
         }
+        
         yield return new WaitForSeconds(5.0f);
         GameManager.instance.endingType = EndingType.Bad;
         GameManager.instance.LoadScene("05.EndingScene");
     }
 
-    /*float timer = 0.0f;
-    float waitTime = 0.7f;
-    // Update is called once per frame
-    void Update()
-    {
-        if (turn && Input.anyKeyDown)
-        {
-            // playerKeyCombo(notes);
-        }
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            PausePopup.SetActive(true);
-            Time.timeScale = 0;
-        }
-    }*/
-
     List<List<List<string>>> getNotes()
     {
-        var notes_ = GameManager.instance.GetCurrentStage();
+        var notes = GameManager.instance.GetCurrentStage();
         int turn = 0, part = 0;
         List<List<List<string>>> data = new List<List<List<string>>>();
         List<List<string>> p_ = new List<List<string>>();
         List<string> k_ = new List<string>();
         p_.Add(k_);
         data.Add(p_);
-        foreach (var note in notes_)
+        foreach (var note in notes)
         {
             if (note.turn - 1 > turn)
             {
                 p_ = new List<List<string>>();
-                k_ = new List<string>();
-                k_.Add(note.key);
+                k_ = new List<string> {note.key};
                 p_.Add(k_);
                 data.Add(p_);
                 turn++;
             }
             else if (note.part - 1 > part)
             {
-                k_ = new List<string>();
-                k_.Add(note.key);
+                k_ = new List<string> {note.key};
                 p_.Add(k_);
                 part++;
             }
@@ -178,9 +183,7 @@ public class IngameScene : MonoBehaviour
             {
                 k_.Add(note.key);
             }
-
         }
-
         return data;
     }
 
@@ -188,7 +191,6 @@ public class IngameScene : MonoBehaviour
     private int stageId;
     void SetupStage()
     {
-        // GameManager.instance.SetStage(2);
         //0,1,2 스테이지 노트리스트를 가져온다.
         notes = getNotes();
 
@@ -271,6 +273,50 @@ public class IngameScene : MonoBehaviour
         sequence = Process();
         StartCoroutine(sequence);
     }
+
+    KeyCode prevCode = KeyCode.Z;
+    bool CheckCode()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            prevCode = KeyCode.A;
+            return true;
+        } else if (Input.GetKeyDown(KeyCode.W))
+        {
+            prevCode = KeyCode.W;
+            return true;
+        } else if (Input.GetKeyDown(KeyCode.S))
+        {
+            prevCode = KeyCode.S;
+            return true;
+        } else if (Input.GetKeyDown(KeyCode.D))
+        {
+            prevCode = KeyCode.D;
+            return true;
+        } else if (Input.GetKeyDown(KeyCode.Space))
+        {
+            prevCode = KeyCode.Space;
+            return true;
+        } else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            prevCode = KeyCode.UpArrow;
+            return true;
+        } else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            prevCode = KeyCode.LeftArrow;
+            return true;
+        } else if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            prevCode = KeyCode.DownArrow;
+            return true;
+        } else if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            prevCode = KeyCode.RightArrow;
+            return true;
+        }
+        return false;
+    }
+    
     IEnumerator Process()
     {
         var waitForSeconds = new WaitForSeconds(2.0f);
@@ -284,10 +330,8 @@ public class IngameScene : MonoBehaviour
         foreach (var turn in notes)
         {
             var combo = new List<KeyCode>();
-            int noteIndex = 0;
             foreach (var part in turn)
             {
-                KeyCode prevCode;
                 foreach (var note in part)
                 {
                     var note_ = keycodeMap[note];
@@ -295,10 +339,14 @@ public class IngameScene : MonoBehaviour
                     // 노트에 따라 음이 달라지면 클립도 변경해야한다.
                     beatSource.clip = clips[0];
                     beatSource.Play();
-                    prevCode = note_;
                     npcKeyImages[noteMap[note_]].enabled = true;
+                    // 스테이지 1 튜토리얼 격으로 표시해줌
+                    if(stageId == 0)
+                        uiImages[noteMap[note_]].enabled = true;
                     yield return waitForSeconds2;
                     npcKeyImages[noteMap[note_]].enabled = false;
+                    if(stageId == 0)
+                        uiImages[noteMap[note_]].enabled = false;
                     yield return waitForSeconds3;
                 }
                 yield return waitForPart;
@@ -309,18 +357,18 @@ public class IngameScene : MonoBehaviour
 
             foreach (var note in combo)
             {
-                yield return new WaitUntil(() => Input.anyKeyDown);
+                yield return new WaitUntil(CheckCode);
                 if (Input.GetKeyDown(note))
                 {
                     beatSource.Play();
                     uiImages[noteMap[note]].enabled = true;
-                    //yield return waitForSeconds2;
                     yield return waitForSeconds3;
                     uiImages[noteMap[note]].enabled = false;
                 }
                 else
                 {
-                    StartCoroutine(failure());
+                    failImages[noteMap[prevCode]].enabled = true;
+                    StartCoroutine(Failure());
                 }
             }
             yourTurn.enabled = false;

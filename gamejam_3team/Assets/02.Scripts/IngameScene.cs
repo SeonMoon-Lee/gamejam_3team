@@ -324,6 +324,7 @@ public class IngameScene : MonoBehaviour
         beatSource.clip = clips[14];
         beatSource.Play();
         yield return waitReadyGo;
+        stageImages[stageId - 1].enabled = false;
         ruReadyImage.enabled = false;
         goImage.enabled = true;
         beatSource.clip = clips[16];

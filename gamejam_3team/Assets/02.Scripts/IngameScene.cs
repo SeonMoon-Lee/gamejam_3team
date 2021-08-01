@@ -17,7 +17,7 @@ public class IngameScene : MonoBehaviour
     Image[] failImages;
     Image[] npcImages;
     Image backgroundFailImage;
-    Text yourTurnText;
+    Image yourTurnText;
     Image ruReadyImage;
     Image goImage;
 
@@ -145,7 +145,7 @@ public class IngameScene : MonoBehaviour
         foreach (var i in failImages) i.enabled = false;
 
         var textObject = GameObject.Find("MessageObject");
-        yourTurnText = textObject.GetComponentInChildren<Text>();
+        yourTurnText = textObject.GetComponentInChildren<Image>(true);
         yourTurnText.enabled = false;
         
         var plantImagesObj = GameObject.Find("background-fail");
@@ -400,7 +400,7 @@ public class IngameScene : MonoBehaviour
             // your turn!
             yourTurnText.enabled = true;
             yield return waitForSeconds3;
-
+            yourTurnText.enabled = false;
             foreach (var note in combo)
             {
                 yield return new WaitUntil(CheckCode);

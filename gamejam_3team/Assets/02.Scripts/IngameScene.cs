@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,10 +18,10 @@ public class IngameScene : MonoBehaviour
     Image[] failImages;
     Image[] npcImages;
     Image backgroundFailImage;
-    Text yourTurn;
+    Text yourTurnText;
+    Image ruReadyImage;
+    Image goImage;
 
-    bool turn = false;
-    int noteIndex = 0;
     List<List<List<string>>> notes;
     Dictionary<KeyCode, int> noteMap;
     Dictionary<String, int> keyMap;
@@ -127,18 +128,24 @@ public class IngameScene : MonoBehaviour
         foreach (var i in failImages) i.enabled = false;
 
         var textObject = GameObject.Find("MessageObject");
-        yourTurn = textObject.GetComponentInChildren<Text>();
-        yourTurn.enabled = false;
+        yourTurnText = textObject.GetComponentInChildren<Text>();
+        yourTurnText.enabled = false;
         
         var plantImagesObj = GameObject.Find("background-fail");
         backgroundFailImage = plantImagesObj.GetComponent<Image>();
         backgroundFailImage.enabled = false;
         stageId = GameManager.instance.StageId;
+
+        var readyGoObj = GameObject.Find("Ready");
+        ruReadyImage = readyGoObj.GetComponent<Image>();
+        ruReadyImage.enabled = false;
+        goImage = readyGoObj.GetComponentsInChildren<Image>()[1];
+        goImage.enabled = false;
     }
 
     IEnumerator Failure()
     {
-        turn = false;
+        // turn = false;
         StopCoroutine(sequence);
         backgroundSource.Stop();
         backgroundFailImage.enabled = true;
@@ -261,12 +268,13 @@ public class IngameScene : MonoBehaviour
     }
     IEnumerator ReadyCount()
     {
-        yield return null;
-        //3
-        yield return null;
-        //2
-        yield return null;
-        //1
+        var waitReadyGo = new WaitForSecondsRealtime(1.0f);
+        ruReadyImage.enabled = true;
+        yield return waitReadyGo;
+        ruReadyImage.enabled = false;
+        goImage.enabled = true;
+        yield return waitReadyGo;
+        goImage.enabled = false;
 
         //start
         sequence = Process();
@@ -340,18 +348,18 @@ public class IngameScene : MonoBehaviour
                     beatSource.Play();
                     npcKeyImages[noteMap[note_]].enabled = true;
                     // 스테이지 1 튜토리얼 격으로 표시해줌
-                    if(stageId == 0)
+                    if(stageId == 1)
                         uiImages[noteMap[note_]].enabled = true;
                     yield return waitForSeconds2;
                     npcKeyImages[noteMap[note_]].enabled = false;
-                    if(stageId == 0)
+                    if(stageId == 1)
                         uiImages[noteMap[note_]].enabled = false;
                     yield return waitForSeconds3;
                 }
                 yield return waitForPart;
             }
             // your turn!
-            yourTurn.enabled = true;
+            yourTurnText.enabled = true;
             yield return waitForSeconds3;
 
             foreach (var note in combo)
@@ -370,7 +378,7 @@ public class IngameScene : MonoBehaviour
                     StartCoroutine(Failure());
                 }
             }
-            yourTurn.enabled = false;
+            yourTurnText.enabled = false;
             yield return waitForSeconds2;
         }
         yield return null;

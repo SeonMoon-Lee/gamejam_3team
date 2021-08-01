@@ -25,6 +25,7 @@ public class IngameScene : MonoBehaviour
     Dictionary<KeyCode, int> noteMap;
     Dictionary<String, int> keyMap;
     Dictionary<string, KeyCode> keycodeMap;
+    Dictionary<KeyCode, AudioClip> beatMap;
     IEnumerator sequence;
     public GameObject Octopus, wasd, Lobster, space, Starfish, arrows;
 
@@ -93,6 +94,14 @@ public class IngameScene : MonoBehaviour
             {"up", KeyCode.UpArrow}, {"left", KeyCode.LeftArrow}, {"down", KeyCode.DownArrow}, {"right", KeyCode.RightArrow}
         };
 
+        beatMap = new Dictionary<KeyCode, AudioClip>
+        {
+            {KeyCode.W, clips[1]}, {KeyCode.A, clips[4]}, {KeyCode.S, clips[3]}, {KeyCode.D, clips[2]},
+            {KeyCode.Space, clips[5]},
+            {KeyCode.UpArrow, clips[7]}, {KeyCode.LeftArrow, clips[8]}, {KeyCode.DownArrow, clips[9]},
+            {KeyCode.RightArrow, clips[10]}
+        };
+        
         Octopus = GameObject.Find("OctopusObject");
         wasd = GameObject.Find("wasd");
         Lobster = GameObject.Find("LobsterObject");
@@ -226,9 +235,8 @@ public class IngameScene : MonoBehaviour
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
                 backgroundSource = audioSources[1];
-                backgroundSource.clip = clips[3];
+                backgroundSource.clip = clips[11];
                 backgroundSource.volume = 0.7f;
-                beatSource.clip = clips[0];
                 break;
             case 2:
                 Octopus.SetActive(true);
@@ -246,9 +254,8 @@ public class IngameScene : MonoBehaviour
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
                 backgroundSource = audioSources[1];
-                backgroundSource.clip = clips[4];
+                backgroundSource.clip = clips[12];
                 backgroundSource.volume = 0.7f;
-                beatSource.clip = clips[0];
                 break;
             case 3:
                 Octopus.SetActive(true);
@@ -262,9 +269,8 @@ public class IngameScene : MonoBehaviour
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
                 backgroundSource = audioSources[1];
-                backgroundSource.clip = clips[5];
+                backgroundSource.clip = clips[13];
                 backgroundSource.volume = 0.7f;
-                beatSource.clip = clips[0];
                 break;
         }
 
@@ -374,7 +380,7 @@ public class IngameScene : MonoBehaviour
                     var note_ = keycodeMap[note.key];
                     combo.Add(note_);
                     // 노트에 따라 음이 달라지면 클립도 변경해야한다.
-                    beatSource.clip = clips[0];
+                    beatSource.clip = beatMap[note_];
                     beatSource.Play();
                     npcKeyImages[noteMap[note_]].enabled = true;
                     // 스테이지 1 튜토리얼 격으로 표시해줌
@@ -400,6 +406,7 @@ public class IngameScene : MonoBehaviour
                 yield return new WaitUntil(CheckCode);
                 if (Input.GetKeyDown(note))
                 {
+                    beatSource.clip = beatMap[note];
                     beatSource.Play();
                     uiImages[noteMap[note]].enabled = true;
                     yield return waitForSeconds3;

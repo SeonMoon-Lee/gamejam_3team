@@ -9,6 +9,8 @@ TagManager:
   - NPC
   - failkey
   - background
+  - gauge1
+  - gauge2
   layers:
   - Default
   - TransparentFX

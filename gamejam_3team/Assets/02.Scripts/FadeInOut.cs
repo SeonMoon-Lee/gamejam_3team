@@ -24,7 +24,7 @@ public class FadeInOut : MonoBehaviour
             target.color = Color.Lerp(curColor, targetColor, time / 1f);
             time += Time.deltaTime/duration;
             yield return null;
-            Debug.Log(target.color);
+            // Debug.Log(target.color);
 
         }
         yield return null;

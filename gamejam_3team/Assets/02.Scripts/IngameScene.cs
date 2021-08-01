@@ -17,6 +17,7 @@ public class IngameScene : MonoBehaviour
     Image[] uiImages;
     Image[] failImages;
     Image[] npcImages;
+    Image[] gauge1Images, gauge2Images, gaugeImages;
     Image backgroundFailImage;
     Image yourTurnText;
     Image ruReadyImage;
@@ -32,7 +33,7 @@ public class IngameScene : MonoBehaviour
     private int stageId;
 
     public GameObject Octopus, wasd, Lobster, space, Starfish, arrows;
-
+    public GameObject gauge1, gauge2;
     public GameObject StageClearPopup;
     public GameObject PausePopup;
 
@@ -84,7 +85,9 @@ public class IngameScene : MonoBehaviour
             {"UpkeyImageFail", 5},
             {"LeftkeyImageFail", 6},
             {"DownkeyImageFail", 7},
-            {"RightkeyImageFail", 8}
+            {"RightkeyImageFail", 8},
+            {"G1-0", 0}, {"G1-1", 1}, {"G1-2", 2}, {"G1-3", 3}, {"G1-4", 4},
+            {"G2-0", 0}, {"G2-1", 1}, {"G2-2", 2}, {"G2-3", 3}, {"G2-4", 4}, {"G2-5", 5}
         };
         noteMap = new Dictionary<KeyCode, int>
         {
@@ -112,6 +115,8 @@ public class IngameScene : MonoBehaviour
         space = GameObject.Find("space");
         Starfish = GameObject.Find("StarfishObject");
         arrows = GameObject.Find("arrows");
+        gauge1 = GameObject.Find("Gauge1");
+        gauge2 = GameObject.Find("Gauge2");
 
         var npcKeyImageObj = GameObject.FindGameObjectsWithTag("key");
         npcKeyImages = new Image[npcKeyImageObj.Length];
@@ -147,6 +152,24 @@ public class IngameScene : MonoBehaviour
         foreach (var i in uiImages) i.enabled = false;
         foreach (var i in npcKeyImages) i.enabled = false;
         foreach (var i in failImages) i.enabled = false;
+        var gauge1ImageObjs = GameObject.FindGameObjectsWithTag("gauge1");
+        var gauge2ImageObjs = GameObject.FindGameObjectsWithTag("gauge2");
+        gauge1Images = new Image[5];
+        gauge2Images = new Image[6];
+        foreach (var t in gauge1ImageObjs)
+        {
+            var image = t.GetComponent<Image>();
+            var index = keyMap[t.name];
+            gauge1Images[index] = image;
+            gauge1Images[index].enabled = false;
+        }
+        foreach (var t in gauge2ImageObjs)
+        {
+            var image = t.GetComponent<Image>();
+            var index = keyMap[t.name];
+            gauge2Images[index] = image;
+            gauge2Images[index].enabled = false;
+        }
 
 
         var textObject = GameObject.Find("MessageObject");
@@ -234,6 +257,9 @@ public class IngameScene : MonoBehaviour
                 space.SetActive(false);
                 Starfish.SetActive(false);
                 arrows.SetActive(false);
+                gauge1.SetActive(true);
+                gauge2.SetActive(false);
+                gaugeImages = gauge1Images;
 
                 // À½¾Ç ¼¼ÆÃ
                 audioSources = GetComponents<AudioSource>();
@@ -253,7 +279,9 @@ public class IngameScene : MonoBehaviour
                 space.transform.position += new Vector3(200, 0.0f, 0.0f);
                 Starfish.SetActive(false);
                 arrows.SetActive(false);
-
+                gauge1.SetActive(false);
+                gauge2.SetActive(true);
+                gaugeImages = gauge2Images;
                 // À½¾Ç ¼¼ÆÃ
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
@@ -268,6 +296,9 @@ public class IngameScene : MonoBehaviour
                 space.SetActive(true);
                 Starfish.SetActive(true);
                 arrows.SetActive(true);
+                gauge1.SetActive(false);
+                gauge2.SetActive(true);
+                gaugeImages = gauge2Images;
 
                 // À½¾Ç ¼¼ÆÃ
                 audioSources = GetComponents<AudioSource>();
@@ -356,13 +387,13 @@ public class IngameScene : MonoBehaviour
         var waitForSeconds3 = new WaitForSeconds(0.05f);
 
         backgroundSource.Play();
+        gaugeImages[0].enabled = true;
         yield return waitForSeconds;
         int turnCount = 0;
         Dictionary<int, List<int>> closeTurnSoundsIndexis = new Dictionary<int, List<int>>();
         closeTurnSoundsIndexis.Add(1, new List<int>() { 0, 1, 2 });
         closeTurnSoundsIndexis.Add(2, new List<int>() { 3, 4, 5, 6 });
         closeTurnSoundsIndexis.Add(3, new List<int>() { 7, 8, 9, 10 });
-
 
         foreach (var turn in notes)
         {
@@ -443,6 +474,8 @@ public class IngameScene : MonoBehaviour
             }
             catch { }
             turnCount++;
+            gaugeImages[turnCount-1].enabled = false;
+            gaugeImages[turnCount].enabled = true;
             yield return new WaitForSeconds(1);
         }
         yield return null;

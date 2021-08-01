@@ -6,6 +6,7 @@ public class StartScene : MonoBehaviour
 {
     private void Start()
     {
+        GameManager.instance.InitValues();
         GameManager.instance.SetBgm("track01");
     }
     public void OnClickStart()

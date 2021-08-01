@@ -72,9 +72,9 @@ public class GameManager : MonoBehaviour
     }
     public void LoadScene(string name)
     {
-        FadeImage.curColor = Color.clear;
-        FadeImage.targetColor = Color.black;
-        FadeImage.Play();
+        //FadeImage.curColor = Color.clear;
+        //FadeImage.targetColor = Color.black;
+        //FadeImage.Play();
         StartCoroutine(LoadSceneAsync(name));
     }
     IEnumerator LoadSceneAsync(string name)
@@ -108,7 +108,9 @@ public class GameManager : MonoBehaviour
                 stageMap.Add(i,notelist.Where(_ => _.idx == i).ToList());
             }
         }
+        LoadScene("01.StartScene");
     }
+
 }
 public class NoteData
 {

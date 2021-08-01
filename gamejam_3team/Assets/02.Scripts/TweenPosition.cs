@@ -19,6 +19,7 @@ public class TweenPosition : MonoBehaviour
     }
     public void Play()
     {
+        StopAllCoroutines();
         StartCoroutine(Tween());
     }
     IEnumerator Tween()

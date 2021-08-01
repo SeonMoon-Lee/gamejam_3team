@@ -474,6 +474,7 @@ public class IngameScene : MonoBehaviour
     }
     public void GoTitle()
     {
+        Time.timeScale = 1;
         GameManager.instance.PlayButtonSound();
         GameManager.instance.LoadScene("01.StartScene");
     }

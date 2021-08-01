@@ -20,6 +20,7 @@ public class TweenScale : MonoBehaviour
     }
     public void Play()
     {
+        StopAllCoroutines();
         StartCoroutine(Tween());
     }
     IEnumerator Tween()

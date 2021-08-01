@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -227,7 +226,7 @@ public class IngameScene : MonoBehaviour
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
                 backgroundSource = audioSources[1];
-                backgroundSource.clip = clips[1];
+                backgroundSource.clip = clips[3];
                 backgroundSource.volume = 0.7f;
                 beatSource.clip = clips[0];
                 break;
@@ -247,7 +246,7 @@ public class IngameScene : MonoBehaviour
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
                 backgroundSource = audioSources[1];
-                backgroundSource.clip = clips[1];
+                backgroundSource.clip = clips[4];
                 backgroundSource.volume = 0.7f;
                 beatSource.clip = clips[0];
                 break;
@@ -263,7 +262,7 @@ public class IngameScene : MonoBehaviour
                 audioSources = GetComponents<AudioSource>();
                 beatSource = audioSources[0];
                 backgroundSource = audioSources[1];
-                backgroundSource.clip = clips[1];
+                backgroundSource.clip = clips[5];
                 backgroundSource.volume = 0.7f;
                 beatSource.clip = clips[0];
                 break;

@@ -6965,7 +6965,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clips:
   - {fileID: 8300000, guid: 96e9b01db0cfe45478010fb7e12804c5, type: 3}
-  - {fileID: 8300000, guid: a16f7f9d306e95b45a1e8c6cce99c81e, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 8300000, guid: 1e4e22a8438cbc84c9598e0f7095f393, type: 3}
+  - {fileID: 8300000, guid: 40d44d4dd17148348aa5ff724ae3d058, type: 3}
+  - {fileID: 8300000, guid: c462e1ddd15787b46bd7adcd6a6b5f85, type: 3}
   UICanvas: {fileID: 282781871}
   NPCCanvas: {fileID: 1574566240}
   Octopus: {fileID: 0}

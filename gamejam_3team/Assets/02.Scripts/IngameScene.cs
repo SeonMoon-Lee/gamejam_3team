@@ -9,6 +9,7 @@ public class IngameScene : MonoBehaviour
     AudioSource backgroundSource;
     AudioSource beatSource;
     public AudioClip[] clips = new AudioClip[2];
+    public AudioClip[] closeTurnSounds;
     public Canvas UICanvas;
     public Canvas NPCCanvas;
 
@@ -143,6 +144,7 @@ public class IngameScene : MonoBehaviour
         foreach (var i in uiImages) i.enabled = false;
         foreach (var i in npcKeyImages) i.enabled = false;
         foreach (var i in failImages) i.enabled = false;
+
 
         var textObject = GameObject.Find("MessageObject");
         yourTurnText = textObject.GetComponentInChildren<Image>(true);
@@ -350,6 +352,12 @@ public class IngameScene : MonoBehaviour
 
         backgroundSource.Play();
         yield return waitForSeconds;
+        int turnCount = 0;
+        Dictionary<int, List<int>> closeTurnSoundsIndexis = new Dictionary<int, List<int>>();
+        closeTurnSoundsIndexis.Add(1, new List<int>() { 0, 1, 2 });
+        closeTurnSoundsIndexis.Add(2, new List<int>() { 2, 3, 4, 5 });
+        closeTurnSoundsIndexis.Add(3, new List<int>() { 6, 7, 8, 9 });
+
 
         foreach (var turn in notes)
         {
@@ -422,8 +430,13 @@ public class IngameScene : MonoBehaviour
                     StartCoroutine(Failure());
                 }
             }
-            yourTurnText.enabled = false;
             yield return waitForSeconds2;
+            try{
+                beatSource.clip = closeTurnSounds[closeTurnSoundsIndexis[stageId][turnCount]];
+                beatSource.Play();
+            }
+            turnCount++;
+            yield return new WaitForSeconds(1);
         }
         yield return null;
         //NPC TURN

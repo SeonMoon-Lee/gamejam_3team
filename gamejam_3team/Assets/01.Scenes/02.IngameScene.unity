@@ -7030,6 +7030,18 @@ MonoBehaviour:
   - {fileID: 8300000, guid: c462e1ddd15787b46bd7adcd6a6b5f85, type: 3}
   - {fileID: 8300000, guid: c0319c1427cea02439712f0354c7bb1b, type: 3}
   - {fileID: 8300000, guid: 54d5181d1c1740446ad8d0a8c1646013, type: 3}
+  closeTurnSounds:
+  - {fileID: 8300000, guid: e25f92f8c099a134db6baa05374ce8af, type: 3}
+  - {fileID: 8300000, guid: 156e9942f23fa7c4096d29b1c7fa1cc1, type: 3}
+  - {fileID: 8300000, guid: 8979f4e9bb571f8418a456af7bc7e738, type: 3}
+  - {fileID: 8300000, guid: 4bc31b0d52b9f6b4ba557455feec7729, type: 3}
+  - {fileID: 8300000, guid: 899cd6541cfde504a81f69e49b2d1146, type: 3}
+  - {fileID: 8300000, guid: 1febd6dd4a7740349a205bfe0bfdecc1, type: 3}
+  - {fileID: 8300000, guid: 9055193833c8d3f478fe78a7462ea748, type: 3}
+  - {fileID: 8300000, guid: 7d109723aaf6f0046bcb3fe85dae9294, type: 3}
+  - {fileID: 8300000, guid: 157e9ed3b796e264f8ff45adb5f638bf, type: 3}
+  - {fileID: 8300000, guid: 2a87dfdd3f6bdaf4598f4959814a1486, type: 3}
+  - {fileID: 8300000, guid: aea2655df84890740ad58c75ca2c5ef5, type: 3}
   UICanvas: {fileID: 282781871}
   NPCCanvas: {fileID: 1574566240}
   Octopus: {fileID: 0}
